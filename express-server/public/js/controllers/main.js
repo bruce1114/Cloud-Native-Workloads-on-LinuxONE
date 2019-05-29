@@ -4,6 +4,8 @@ angular.module('accountController', [])
 	.controller('mainController', ['$scope','$http','Accounts', function($scope, $http, Accounts) {
 		$scope.createForm = {};
 		$scope.saveForm = {};
+		$scope.transferForm = {};
+		$scope.withdrawalForm={};
 		$scope.loading = true;
 
 		// GET =====================================================================
@@ -36,6 +38,8 @@ angular.module('accountController', [])
 			}
 		};
 
+
+		
 		$scope.saveAccount = function() {
 
 			// validate the saveForm to make sure that something is there
@@ -46,7 +50,7 @@ angular.module('accountController', [])
 				// call the save function from our service (returns a promise object)
 				Accounts.save($scope.saveForm)
 
-	// 				// if successful creation, call our get function to get all the new accounts
+	 				// if successful creation, call our get function to get all the new accounts
 					.success(function(data) {
 						$scope.loading = false;
 						$scope.saveForm = {}; // clear the form so our user is ready to enter another
@@ -54,6 +58,39 @@ angular.module('accountController', [])
 					});
 	 		}
 	 	};
+
+		 $scope.transferAccount = function() {
+
+			// validate the transferForm to make sure that something is there
+			// if form is empty, nothing will happen
+			if (($scope.transferForm.name1 != undefined)&&($scope.transferForm.name2 != undefined)) {
+				$scope.loading = true;
+
+				// call the save function from our service (returns a promise object)
+				Accounts.transfer($scope.transferForm)
+
+	 				// if successful creation, call our get function to get all the new accounts
+					.success(function(data) {
+						$scope.loading = false;
+						$scope.transferForm = {}; // clear the form so our user is ready to enter another
+						$scope.accounts = data; // assign our new list of accounts
+					});
+	 		}
+	 	};
+
+
+		$scope.withdrawalAccount=function(){
+			if($scope.withdrawalForm.name!=undefined){
+				$scope.loading=true;
+				Accounts.withdraw($scope.withdrawalForm).success(function(data){
+					$scope.loading=false;
+					$scope.withdrawalForm={};
+					$scope.accounts=data;
+				});
+			}
+		};
+
+
 
 		// DELETE ==================================================================
 		// delete a account after checking it
